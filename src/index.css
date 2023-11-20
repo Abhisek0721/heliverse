@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.search-bar {
+    outline: none;
+    padding: 5px 10px;
+    font-size: large;
+}
