@@ -27,7 +27,8 @@ const User = () => {
     return (
         <div>
             <SearchBar setUserData={setUserData} />
-            <div className="flex flex-wrap justify-evenly mt-5 md:mx-48">
+            <div>
+                <div className="flex flex-wrap justify-evenly mt-5 md:mx-48">
                 {
                     userData && userData.map((user:any)=> {
                         return (
@@ -37,7 +38,8 @@ const User = () => {
                         )
                     })
                 }
-                <div className="mb-32 mt-10">
+                </div>
+                <div className="pb-32 mt-10">
                     <Pagination totalUsers={totalUsers} currentPage={currentPage} setCurrentPage={setCurrentPage} setUserData={setUserData} />
                 </div>
             </div>
