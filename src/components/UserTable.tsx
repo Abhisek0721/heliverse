@@ -2,12 +2,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import userDataAction from "../redux/actions/userDataAction";
 import { getUserData } from '../utils/apiServices/userAPICalls';
 import { useEffect, useState } from 'react';
+import { toast } from "react-toastify";
 
-const UserTable = () => {
+const UserTable = (props:any) => {
     const usersData = useSelector((state: any) => state.userDataReducer);
     const dispatch = useDispatch();
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
+    const defaultUserIds:string[] = [];
+    const [selectedUserIds, setSelectedUserIds] = useState(defaultUserIds);
+    const defaultDomains:string[] = [];
+    const [selectedDomain, setSelectedDomain] = useState(defaultDomains);
 
     useEffect(()=> {
         const fetchData = async () => {
@@ -29,6 +34,43 @@ const UserTable = () => {
             }
             const data = await getUserData(pageNumber*20);
             dispatch(userDataAction(data.data));
+        }
+    }
+
+    const selectUser = (userId:string, available:boolean, domain:string) => {
+        const clickedCheckbox = (document.getElementById(`checkbox-${userId}`) as any);
+
+        if(clickedCheckbox?.checked) {
+            if(!available){
+                toast.error("Can't select inactive user!");
+                clickedCheckbox.checked = false;
+                return;
+            };
+
+            if(selectedDomain.includes(domain)){
+                toast.error("User with this domain is already selected!");
+                clickedCheckbox.checked = false;
+                return;
+            }
+
+            selectedDomain.push(domain);
+            setSelectedDomain([...selectedDomain]);
+            selectedUserIds.push(userId);
+            setSelectedUserIds([...selectedUserIds]);
+            props?.setSelectedUserIds([...selectedUserIds]);
+        }else{
+            if(selectedDomain.includes(domain)){
+                let indexToRemove = selectedDomain.indexOf(domain);
+                if (indexToRemove > -1) { // only splice array when item is found
+                    selectedDomain.splice(indexToRemove, 1); // 2nd parameter means remove one item only
+                }
+                indexToRemove = selectedUserIds.indexOf(userId);
+                if (indexToRemove > -1) {
+                    selectedUserIds.splice(indexToRemove, 1);
+                }
+            }
+            console.log(selectedDomain);
+            console.log(selectedUserIds);
         }
     }
 
@@ -82,14 +124,14 @@ const UserTable = () => {
                                                     <tr key={user?._id}>
                                                         <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                                                             <div className="inline-flex items-center gap-x-3">
-                                                                <input type="checkbox" className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700" />
+                                                                <input type="checkbox" onClick={()=> selectUser(user?._id, user?.available, user?.domain)} id={`checkbox-${user?._id}`} className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700" />
 
-                                                                <div className="flex items-center gap-x-2">
+                                                                <label htmlFor={`checkbox-${user?._id}`} className="flex items-center gap-x-2">
                                                                     <img className="object-cover w-10 h-10 rounded-full" src={user?.avatar} alt="" />
                                                                     <div>
                                                                         <h2 className="font-medium text-gray-800 dark:text-white ">{user?.first_name} {user?.last_name}</h2>
                                                                     </div>
-                                                                </div>
+                                                                </label>
                                                             </div>
                                                         </td>
                                                         <td className="px-12 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">

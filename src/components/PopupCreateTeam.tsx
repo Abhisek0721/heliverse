@@ -1,12 +1,9 @@
 import { Modal, Box } from "@mui/material";
-import axios from "axios";
-import { useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
-import properties from "../constants/properties";
-import { toast } from "react-toastify";
 import UserTable from "./UserTable";
-
-
+import { useState } from "react";
+import { createTeam } from "../utils/apiServices/teamAPICalls";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute" as "absolute",
@@ -21,37 +18,22 @@ const style = {
 const PopupCreateTeam = (props: any) => {
   const { openCreateTeamModal, setOpenCreateTeamModal } = props;
   const handleClose = () => setOpenCreateTeamModal(false);
-  const [addUser, setAddUser] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    domain: "Sales",
-    avatar: "https://robohash.org/utquirepudiandae.png?size=50x50&set=set1",
-    gender: "Male",
-    available: "No",
-  });
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
+  const [teamName, setTeamName] = useState("");
 
-  const addUserSubmit = () => {
-    axios
-      .post(`${properties.SERVER_URL}/api/users/create-user`, addUser)
-      .then((res) => {
-        if(res.data?.status){
-          console.log(res.data);
-          toast.success(res.data?.message);
-          handleClose();
-          return;
-        }
-        toast.error(res.data?.message);
-      })
-      .catch((err) => {
-        if(err?.response?.status === 400){
-          toast.warn(err?.response?.data?.message);
-          return;
-        }
-        toast.error(err?.response?.data?.message);
-        console.log(err?.response?.data);
-      });
-  };
+  const createTeamSubmit = async () => {
+    const createTeamPayload = {
+      teamName: teamName,
+      userIds: selectedUserIds
+    };
+    const response = await createTeam(createTeamPayload);
+    if(response?.status) {
+      toast.success(response?.message);
+      handleClose();
+      return;
+    }
+    toast.error(response?.message);
+  }
 
   return (
     <div>
@@ -77,11 +59,8 @@ const PopupCreateTeam = (props: any) => {
             <div className="flex flex-col my-10">
               {/* Team Name */}
               <input
-                onChange={(e) => {
-                  addUser.first_name = e.target.value;
-                  setAddUser({ ...addUser });
-                }}
                 type="text"
+                onChange={(e)=> setTeamName(e.target.value)}
                 className="sm:w-[60%] mx-auto bg-slate-800 text-slate-300 outline-none py-2 px-4 text-xl my-2"
                 placeholder="Team Name"
                 name="teamName"
@@ -90,21 +69,17 @@ const PopupCreateTeam = (props: any) => {
               />
               {/* Add Users To The Team */}
               <div
-                onChange={(e) => {
-                  addUser.available = (e.target as HTMLInputElement).value;
-                  setAddUser({ ...addUser });
-                }}
                 className="my-2 sm:w-[60%] sm:mx-auto text-xl text-slate-300"
               >
                 <div className="mt-5 text-center">Add Available Users</div>
                 <div className="flex justify-evenly my-2">
-                  <UserTable />
+                  <UserTable setSelectedUserIds={setSelectedUserIds} />
                 </div>
               </div>
               {/* Submit Button */}
               <div className="my-5 flex">
                 <button
-                  onClick={()=> addUserSubmit()}
+                  onClick={()=> createTeamSubmit()}
                   className="mx-auto sm:w-[30%] bg-slate-700 px-5 py-2 font-semibold rounded-md md:hover:bg-slate-600 active:bg-slate-900"
                 >
                   Create Team
