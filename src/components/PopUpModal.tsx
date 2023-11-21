@@ -25,15 +25,18 @@ const PopupModal = (props: any) => {
     domain: "Sales",
     avatar: "https://robohash.org/utquirepudiandae.png?size=50x50&set=set1",
     gender: "Male",
-    available: "Yes",
+    available: "No",
   });
 
   const addUserSubmit = () => {
+    console.log(addUser);
     axios
-      .post(`${properties.SERVER_URL}/api/users`, addUser)
+      .post(`${properties.SERVER_URL}/api/users/create-user`, addUser)
       .then((res) => {
-        console.log(res.data);
-        handleClose();
+        if(res.data?.status){
+          console.log(res.data);
+          // handleClose();
+        }
       })
       .catch((err) => {
         console.log(err?.response?.data);
@@ -115,7 +118,7 @@ const PopupModal = (props: any) => {
                     {
                         domainOptions.map((domainName) => {
                             return (
-                                <option value={domainName} >
+                                <option value={domainName} key={domainName} >
                                     {domainName}
                                 </option>
                             );
@@ -192,7 +195,7 @@ const PopupModal = (props: any) => {
                   <div>
                     <input
                       type="radio"
-                      value="yes"
+                      value="Yes"
                       id="available-yes"
                       name="available-yes"
                     />
