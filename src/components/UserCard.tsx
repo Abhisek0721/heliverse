@@ -1,4 +1,5 @@
 import { FaMale, FaFemale, FaUser, FaUserSlash, FaEnvelope } from "react-icons/fa";
+import { ToastContainer } from "react-toastify";
 
 const UserCard = (props:any) => {
 
@@ -6,7 +7,7 @@ const UserCard = (props:any) => {
 
     return (
         <div className="w-64 sm:w-80 mt-5 mx-5 overflow-hidden rounded-lg shadow-md bg-gray-700">
-
+            <ToastContainer />
             <div className="p-6">
                 <div>
                     <div className="flex items-center">

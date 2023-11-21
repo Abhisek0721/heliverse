@@ -4,6 +4,9 @@ import { useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import properties from "../constants/properties";
 import domainOptions from "../utils/common/domainOptions";
+import { toast } from "react-toastify";
+
+
 
 const style = {
   position: "absolute" as "absolute",
@@ -29,16 +32,23 @@ const PopupModal = (props: any) => {
   });
 
   const addUserSubmit = () => {
-    console.log(addUser);
     axios
       .post(`${properties.SERVER_URL}/api/users/create-user`, addUser)
       .then((res) => {
         if(res.data?.status){
           console.log(res.data);
-          // handleClose();
+          toast.success(res.data?.message);
+          handleClose();
+          return;
         }
+        toast.error(res.data?.message);
       })
       .catch((err) => {
+        if(err?.response?.status === 400){
+          toast.warn(err?.response?.data?.message);
+          return;
+        }
+        toast.error(err?.response?.data?.message);
         console.log(err?.response?.data);
       });
   };
@@ -55,6 +65,7 @@ const PopupModal = (props: any) => {
           sx={style}
           className="bg-slate-900 w-[95%] h-[90%] lg:w-[900px] lg:h-[800px]"
         >
+          
           <div>
             <IoCloseSharp
               onClick={() => handleClose()}
@@ -226,7 +237,7 @@ const PopupModal = (props: any) => {
               {/* Submit Button */}
               <div className="my-5 flex">
                 <button
-                  onClick={() => addUserSubmit()}
+                  onClick={()=> addUserSubmit()}
                   className="mx-auto sm:w-[30%] bg-slate-700 px-5 py-2 font-semibold rounded-md md:hover:bg-slate-600 active:bg-slate-900"
                 >
                   Add User

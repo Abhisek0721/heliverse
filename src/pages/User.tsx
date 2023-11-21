@@ -4,6 +4,8 @@ import { getUserData } from "../utils/apiServices/userAPICalls";
 import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
 import PopupModal from "../components/PopUpModal";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const User = () => {
     const [openAddUserModal, setOpenAddUserModal] = useState(false);
@@ -28,6 +30,7 @@ const User = () => {
 
     return (
         <div>
+            <ToastContainer />
             <PopupModal openAddUserModal={openAddUserModal} setOpenAddUserModal={setOpenAddUserModal} />
             <div className="flex mt-16">
                 <button onClick={()=> setOpenAddUserModal(!openAddUserModal)} className="mx-auto bg-slate-700 px-5 py-2 font-semibold rounded-md md:hover:bg-slate-600 active:bg-slate-900">Add User</button>
