@@ -2,8 +2,7 @@ import UserCard from "../components/UserCard";
 import { useState, useEffect } from "react";
 import { getUserData } from "../utils/apiServices/userAPICalls";
 import Pagination from "../components/Pagination";
-import SearchBar from "../components/SearchBar";
-import PopupModal from "../components/PopupAddUserModal";
+import PopupCreateTeam from "../components/PopupCreateTeam";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PopupUserFilter from "../components/PopupUserFilter";
@@ -11,8 +10,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import userDataAction from "../redux/actions/userDataAction";
 
 
-const User = () => {
-    const [openAddUserModal, setOpenAddUserModal] = useState(false);
+const Team = () => {
+    const [openCreateTeamModal, setOpenCreateTeamModal] = useState(false);
     const [openFilterModal, setOpenFilterModal] = useState(false);
     const [totalUsers, setTotalUsers] = useState(1000);
     const [currentPage, setCurrentPage] = useState(1);
@@ -39,16 +38,16 @@ const User = () => {
             {/* Popup Toastify */}
             <ToastContainer />
             {/* Add User Modal */}
-            <PopupModal openAddUserModal={openAddUserModal} setOpenAddUserModal={setOpenAddUserModal} />
+            <PopupCreateTeam openCreateTeamModal={openCreateTeamModal} setOpenCreateTeamModal={setOpenCreateTeamModal} />
             {/* Filter Modal */}
             <PopupUserFilter  openFilterModal={openFilterModal} setOpenFilterModal={setOpenFilterModal} />
 
             <div className="flex mt-16">
-                <button onClick={()=> setOpenAddUserModal(!openAddUserModal)} className="mx-auto bg-slate-700 px-5 py-2 font-semibold rounded-md md:hover:bg-slate-600 active:bg-slate-900">Add User</button>
+                <button onClick={()=> setOpenCreateTeamModal(!openCreateTeamModal)} className="mx-auto bg-slate-700 px-5 py-2 font-semibold rounded-md md:hover:bg-slate-600 active:bg-slate-900">Create Team</button>
             </div>
-            <SearchBar openFilterModal={openFilterModal} setOpenFilterModal={setOpenFilterModal} />
+            
             <div>
-                <div className="flex flex-wrap justify-evenly mt-5 md:mx-48">
+                <div className="flex flex-wrap justify-evenly py-10 md:mx-48">
                 {
                     usersData && usersData.map((user:any)=> {
                         return (
@@ -59,12 +58,9 @@ const User = () => {
                     })
                 }
                 </div>
-                <div className="pb-32 mt-10">
-                    <Pagination totalUsers={totalUsers} currentPage={currentPage} setCurrentPage={setCurrentPage} />
-                </div>
             </div>
         </div>
     )
 }
 
-export default User;
+export default Team;
