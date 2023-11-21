@@ -7,10 +7,10 @@ function App() {
 
   return (
     <div className='min-w-full min-h-screen bg-slate-800 text-slate-300'>
-      <Navbar />
       <BrowserRouter>
+        <Navbar />
         <Routes>
-          <Route path='' element={<User />} />
+          <Route path='/' element={<User />} />
         </Routes>
       </BrowserRouter>
     </div>

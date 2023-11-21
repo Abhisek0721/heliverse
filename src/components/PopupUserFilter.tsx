@@ -5,7 +5,8 @@ import { IoCloseSharp } from "react-icons/io5";
 import properties from "../constants/properties";
 import domainOptions from "../utils/common/domainOptions";
 import { toast } from "react-toastify";
-
+import { useDispatch } from "react-redux";
+import userDataAction from "../redux/actions/userDataAction";
 
 
 const style = {
@@ -18,26 +19,22 @@ const style = {
   p: 4,
 };
 
-const PopupModal = (props: any) => {
-  const { openAddUserModal, setOpenAddUserModal } = props;
-  const handleClose = () => setOpenAddUserModal(false);
-  const [addUser, setAddUser] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    domain: "Sales",
-    avatar: "https://robohash.org/utquirepudiandae.png?size=50x50&set=set1",
-    gender: "Male",
-    available: "No",
+const PopupUserFilter = (props: any) => {
+  const { openFilterModal, setOpenFilterModal } = props;
+  const handleClose = () => setOpenFilterModal(false);
+  const [filterQuery, setFilterQuery] = useState({
+    gender: "",
+    available: "",
+    domain: ""
   });
+  const dispatch = useDispatch();
 
-  const addUserSubmit = () => {
+  const filterSubmit = () => {
     axios
-      .post(`${properties.SERVER_URL}/api/users/create-user`, addUser)
+      .get(`${properties.SERVER_URL}/api/users/filter-users/0?domain=${filterQuery.domain}&gender=${filterQuery.gender}&available=${filterQuery.available}`)
       .then((res) => {
         if(res.data?.status){
-          console.log(res.data);
-          toast.success(res.data?.message);
+          dispatch(userDataAction(res.data?.data));
           handleClose();
           return;
         }
@@ -56,14 +53,14 @@ const PopupModal = (props: any) => {
   return (
     <div>
       <Modal
-        open={openAddUserModal}
+        open={openFilterModal}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box
           sx={style}
-          className="bg-slate-900 w-[95%] h-[90%] lg:w-[900px] lg:h-[800px]"
+          className="bg-slate-900 w-[95%] h-[90%] lg:w-[900px] lg:h-[650px]"
         >
           
           <div>
@@ -73,76 +70,13 @@ const PopupModal = (props: any) => {
             />
           </div>
           <div className="p-1 sm:p-4 text-white mt-5">
-            <h1 className="text-center text-2xl sm:tex-3xl">Add New User</h1>
+            <h1 className="text-center text-2xl sm:tex-3xl">User Filter</h1>
             <div className="flex flex-col my-10">
-              {/* First Name */}
-              <input
-                onChange={(e) => {
-                  addUser.first_name = e.target.value;
-                  setAddUser({ ...addUser });
-                }}
-                type="text"
-                className="sm:w-[60%] mx-auto bg-slate-800 text-slate-300 outline-none py-2 px-4 text-xl my-2"
-                placeholder="First Name"
-                name="first_name"
-                id="first_name"
-                required
-              />
-              {/* Last Name */}
-              <input
-                type="text"
-                onChange={(e) => {
-                  addUser.last_name = e.target.value;
-                  setAddUser({ ...addUser });
-                }}
-                className="sm:w-[60%] mx-auto bg-slate-800 text-slate-300 outline-none py-2 px-4 text-xl my-2"
-                placeholder="Last Name"
-                name="last_name"
-                id="last_name"
-                required
-              />
-              {/* Email */}
-              <input
-                type="email"
-                onChange={(e) => {
-                  addUser.email = e.target.value;
-                  setAddUser({ ...addUser });
-                }}
-                className="sm:w-[60%] mx-auto bg-slate-800 text-slate-300 outline-none py-2 px-4 text-xl my-2"
-                placeholder="Email"
-                name="email"
-                id="email"
-                required
-              />
-              {/* Domain */}
-              <div className="my-2 sm:w-[60%] mx-auto text-xl text-slate-300">
-                <div className="mt-2">Domain</div>
-                <div className="flex justify-evenly my-2">
-                  <select
-                    onChange={(e) => {
-                      addUser.domain = e.target.value;
-                      setAddUser({ ...addUser });
-                    }}
-                    placeholder="Domain"
-                    className="w-[100%] mx-auto bg-slate-800 text-slate-300 outline-none py-2 px-4 text-xl my-2"
-                  >
-                    {
-                        domainOptions.map((domainName) => {
-                            return (
-                                <option value={domainName} key={domainName} >
-                                    {domainName}
-                                </option>
-                            );
-                        })
-                    }
-                  </select>
-                </div>
-              </div>
               {/* Gender */}
               <div
                 onChange={(e) => {
-                  addUser.gender = (e.target as HTMLInputElement).value;
-                  setAddUser({ ...addUser });
+                    filterQuery.gender = (e.target as HTMLInputElement).value;
+                    setFilterQuery({...filterQuery});
                 }}
                 className="my-2 sm:w-[60%] sm:mx-auto text-xl text-slate-300"
               >
@@ -151,10 +85,9 @@ const PopupModal = (props: any) => {
                   <div>
                     <input
                       type="radio"
-                      value="Male"
+                      value="male"
                       id="male-gender"
                       name="gender"
-                      defaultChecked
                     />
                     <label
                       htmlFor="male-gender"
@@ -166,7 +99,7 @@ const PopupModal = (props: any) => {
                   <div>
                     <input
                       type="radio"
-                      value="Female"
+                      value="female"
                       id="female-gender"
                       name="gender"
                     />
@@ -180,7 +113,7 @@ const PopupModal = (props: any) => {
                   <div>
                     <input
                       type="radio"
-                      value="Other"
+                      value="other"
                       id="other-gender"
                       name="gender"
                     />
@@ -196,8 +129,8 @@ const PopupModal = (props: any) => {
               {/* Available */}
               <div
                 onChange={(e) => {
-                  addUser.available = (e.target as HTMLInputElement).value;
-                  setAddUser({ ...addUser });
+                    filterQuery.available = (e.target as HTMLInputElement).value;
+                    setFilterQuery({...filterQuery});
                 }}
                 className="my-2 sm:w-[60%] sm:mx-auto text-xl text-slate-300"
               >
@@ -206,7 +139,7 @@ const PopupModal = (props: any) => {
                   <div>
                     <input
                       type="radio"
-                      value="Yes"
+                      value="yes"
                       id="available-yes"
                       name="available"
                     />
@@ -223,7 +156,6 @@ const PopupModal = (props: any) => {
                       value="no"
                       id="available-no"
                       name="available"
-                      defaultChecked
                     />
                     <label
                       htmlFor="available-no"
@@ -234,13 +166,43 @@ const PopupModal = (props: any) => {
                   </div>
                 </div>
               </div>
+
+            {/* Domain */}
+            <div className="my-2 sm:w-[60%] mx-auto text-xl text-slate-300">
+                <div className="mt-2">Domain</div>
+                <div className="flex justify-evenly my-2">
+                  <select
+                    onChange={(e) => {
+                      filterQuery.domain = e.target.value;
+                      setFilterQuery({...filterQuery});
+                    }}
+                    placeholder="Domain"
+                    defaultValue={""}
+                    className="w-[100%] mx-auto bg-slate-800 text-slate-300 outline-none py-2 px-4 text-xl my-2"
+                  >
+                    <option value={""}>
+                        -- Select Domain --
+                    </option>
+                    {
+                        domainOptions.map((domainName) => {
+                            return (
+                                <option value={domainName} key={domainName} >
+                                    {domainName}
+                                </option>
+                            );
+                        })
+                    }
+                  </select>
+                </div>
+              </div>
+
               {/* Submit Button */}
               <div className="my-5 flex">
                 <button
-                  onClick={()=> addUserSubmit()}
+                  onClick={()=> filterSubmit()}
                   className="mx-auto sm:w-[30%] bg-slate-700 px-5 py-2 font-semibold rounded-md md:hover:bg-slate-600 active:bg-slate-900"
                 >
-                  Add User
+                  Apply
                 </button>
               </div>
             </div>
@@ -251,4 +213,4 @@ const PopupModal = (props: any) => {
   );
 };
 
-export default PopupModal;
+export default PopupUserFilter;

@@ -1,10 +1,12 @@
 import { getUserData } from "../utils/apiServices/userAPICalls";
+import { useDispatch } from "react-redux";
+import userDataAction from "../redux/actions/userDataAction";
 
 const Pagination = (props:any) => {
-
     const totalUsers = props?.totalUsers;
     const totalPages = Math.round(totalUsers/20);
     const currentPage = props?.currentPage;
+    const dispatch = useDispatch();
 
     const onPageClick = async (pageNumber:number) => {
         if(pageNumber<(totalPages) && pageNumber>=0){
@@ -12,7 +14,7 @@ const Pagination = (props:any) => {
                 props?.setCurrentPage(pageNumber+1);
             }
             const data = await getUserData(pageNumber*20);
-            props?.setUserData(data.data);
+            dispatch(userDataAction(data.data));
         }
     }
 
