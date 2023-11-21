@@ -22,13 +22,33 @@ export const createTeam = async (teamPayload:{
     }
 }
 
-export const searchUserByName = async (username:string) => {
+export const getAllTeams = async () => {
     try {
-        if(!username) {
-            const data = '';
-            return data;
+        const data = await axios.get(`${properties.SERVER_URL}/api/team`);
+        return data.data;
+    } catch (error:any) {
+        return {
+            status: false,
+            error: error?.message
         }
-        const data = await axios.get(`${properties.SERVER_URL}/api/users/search-user/${username}`);
+    }
+}
+
+export const deleteTeamById = async (teamId:string) => {
+    try {
+        const data = await axios.delete(`${properties.SERVER_URL}/api/team/${teamId}`);
+        return data.data;
+    } catch (error:any) {
+        return {
+            status: false,
+            error: error?.message
+        }
+    }
+}
+
+export const getTeamById = async (teamId:string) => {
+    try {
+        const data = await axios.get(`${properties.SERVER_URL}/api/team/${teamId}`);
         return data.data;
     } catch (error:any) {
         return {

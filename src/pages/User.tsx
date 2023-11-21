@@ -18,6 +18,7 @@ const User = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const usersData = useSelector((state:any) => state.userDataReducer);
     const dispatch = useDispatch();
+    const [userDeleted, setUserDeleted] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,7 +33,7 @@ const User = () => {
         };
 
         fetchData();
-    }, []);
+    }, [userDeleted]);
 
     return (
         <div>
@@ -53,7 +54,7 @@ const User = () => {
                     usersData && usersData.map((user:any)=> {
                         return (
                             <div key={user?._id}>
-                                <UserCard user={user} />
+                                <UserCard user={user} userDeleted={userDeleted} setUserDeleted={setUserDeleted} />
                             </div>
                         )
                     })

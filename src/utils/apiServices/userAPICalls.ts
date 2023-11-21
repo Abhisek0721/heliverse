@@ -28,3 +28,16 @@ export const searchUserByName = async (username:string) => {
         }
     }
 }
+
+
+export const deleteUserById = async (userId:string) => {
+    try {
+        const data = await axios.delete(`${properties.SERVER_URL}/api/users/${userId}`);
+        return data.data;
+    } catch (error:any) {
+        return {
+            status: false,
+            error: error?.message
+        }
+    }
+}

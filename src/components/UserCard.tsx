@@ -1,13 +1,29 @@
 import { FaMale, FaFemale, FaUser, FaUserSlash, FaEnvelope } from "react-icons/fa";
 import { ToastContainer } from "react-toastify";
+import { FaTrashAlt } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { deleteUserById } from "../utils/apiServices/userAPICalls";
 
 const UserCard = (props:any) => {
-
     const user = props?.user;
+
+    const deleteUser = async (userId: string) => {
+        const data = await deleteUserById(userId);
+        console.log(data);
+        if(data?.status){
+            toast.success(data?.message);
+            props?.setUserDeleted(!props?.userDeleted);
+            return;
+        }
+        toast.error(data?.message);
+    }
 
     return (
         <div className="w-64 sm:w-80 mt-5 mx-5 overflow-hidden rounded-lg shadow-md bg-gray-700">
             <ToastContainer />
+            <div className="float-right p-4">
+                <FaTrashAlt onClick={()=> deleteUser(user?._id)} className="text-xl cursor-pointer md:hover:text-red-500" />
+            </div>
             <div className="p-6">
                 <div>
                     <div className="flex items-center">

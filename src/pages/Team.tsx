@@ -1,23 +1,24 @@
-import UserCard from "../components/UserCard";
+import TeamCard from "../components/TeamCard";
 import { useState, useEffect } from "react";
-import { getUserData } from "../utils/apiServices/userAPICalls";
+import { getAllTeams } from "../utils/apiServices/teamAPICalls";
 import PopupCreateTeam from "../components/PopupCreateTeam";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useSelector, useDispatch } from 'react-redux';
-import userDataAction from "../redux/actions/userDataAction";
+
 
 
 const Team = () => {
     const [openCreateTeamModal, setOpenCreateTeamModal] = useState(false);
-    const usersData = useSelector((state:any) => state.userDataReducer);
-    const dispatch = useDispatch();
+    const [teamData, setTeamData] = useState([]);
+    const [userDeleted, setUserDeleted] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await getUserData();
-                dispatch(userDataAction(data?.data));
+                const data = await getAllTeams();
+                if(data?.status){
+                    setTeamData(data?.data);
+                }
             } catch (error) {
                 // Handle errors if needed
                 console.error('Error fetching user data:', error);
@@ -25,15 +26,14 @@ const Team = () => {
         };
 
         fetchData();
-    }, []);
+    }, [openCreateTeamModal, userDeleted]);
 
     return (
         <div>
             {/* Popup Toastify */}
             <ToastContainer />
-            {/* Add User Modal */}
+            {/* Create Team Modal */}
             <PopupCreateTeam openCreateTeamModal={openCreateTeamModal} setOpenCreateTeamModal={setOpenCreateTeamModal} />
-
             <div className="flex mt-16">
                 <button 
                     onClick={()=> setOpenCreateTeamModal(!openCreateTeamModal)} 
@@ -47,10 +47,10 @@ const Team = () => {
             <div>
                 <div className="flex flex-wrap justify-evenly py-10 md:mx-48">
                 {
-                    usersData && usersData.map((user:any)=> {
+                    teamData && teamData.map((team:any)=> {
                         return (
-                            <div key={user?._id}>
-                                <UserCard user={user} />
+                            <div key={team?._id}>
+                                <TeamCard team={team} setUserDeleted={setUserDeleted} userDeleted={userDeleted} />
                             </div>
                         )
                     })
