@@ -7,8 +7,10 @@ const Pagination = (props:any) => {
     const currentPage = props?.currentPage;
 
     const onPageClick = async (pageNumber:number) => {
-        if(pageNumber<(totalPages-2) && pageNumber>=0){
-            props?.setCurrentPage(pageNumber+1);
+        if(pageNumber<(totalPages) && pageNumber>=0){
+            if(totalPages-2>pageNumber) {
+                props?.setCurrentPage(pageNumber+1);
+            }
             const data = await getUserData(pageNumber*20);
             props?.setUserData(data.data);
         }
@@ -31,15 +33,15 @@ const Pagination = (props:any) => {
                 {currentPage + 1}
             </div>
 
-            <div className="cursor-pointer hidden px-4 py-2 mx-1 text-white transition-colors duration-300 transform bg-gray-600 rounded-md sm:inline hover:bg-blue-500 hover:text-white">
+            <div onClick={()=> onPageClick(0)} className="cursor-pointer hidden px-4 py-2 mx-1 text-white transition-colors duration-300 transform bg-gray-600 rounded-md sm:inline hover:bg-blue-500 hover:text-white">
                 ...
             </div>
 
-            <div className="cursor-pointer hidden px-4 py-2 mx-1 text-white transition-colors duration-300 transform bg-gray-600 rounded-md sm:inline hover:bg-blue-500 hover:text-white">
+            <div onClick={()=> onPageClick(totalPages - 1)} className="cursor-pointer hidden px-4 py-2 mx-1 text-white transition-colors duration-300 transform bg-gray-600 rounded-md sm:inline hover:bg-blue-500 hover:text-white">
                 {totalPages - 1}
             </div>
 
-            <div className="cursor-pointer hidden px-4 py-2 mx-1 text-white transition-colors duration-300 transform bg-gray-600 rounded-md sm:inline hover:bg-blue-500 hover:text-white">
+            <div onClick={()=> onPageClick(totalPages)} className="cursor-pointer hidden px-4 py-2 mx-1 text-white transition-colors duration-300 transform bg-gray-600 rounded-md sm:inline hover:bg-blue-500 hover:text-white">
                 {totalPages}
             </div>
 

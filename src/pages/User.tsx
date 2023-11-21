@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import { getUserData } from "../utils/apiServices/userAPICalls";
 import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
+import PopupModal from "../components/PopUpModal";
 
 const User = () => {
+    const [openAddUserModal, setOpenAddUserModal] = useState(false);
     const [userData, setUserData] = useState([]);
     const [totalUsers, setTotalUsers] = useState(1000);
     const [currentPage, setCurrentPage] = useState(1);
@@ -26,6 +28,10 @@ const User = () => {
 
     return (
         <div>
+            <PopupModal openAddUserModal={openAddUserModal} setOpenAddUserModal={setOpenAddUserModal} />
+            <div className="flex mt-16">
+                <button onClick={()=> setOpenAddUserModal(!openAddUserModal)} className="mx-auto bg-slate-700 px-5 py-2 font-semibold rounded-md md:hover:bg-slate-600 active:bg-slate-900">Add User</button>
+            </div>
             <SearchBar setUserData={setUserData} />
             <div>
                 <div className="flex flex-wrap justify-evenly mt-5 md:mx-48">

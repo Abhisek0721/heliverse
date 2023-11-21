@@ -1,4 +1,5 @@
 import { searchUserByName } from "../utils/apiServices/userAPICalls";
+import { FaFilter } from "react-icons/fa";
 
 const SearchBar = (props:any):JSX.Element => {
 
@@ -25,10 +26,13 @@ const SearchBar = (props:any):JSX.Element => {
     const processSearch = debounceSearch();
 
     return (
-        <div>
-            <div className="flex">
-                <input type="text" placeholder="Search" onKeyUp={(e:React.KeyboardEvent)=>processSearch(e)} className="mx-auto w-[75%] bg-slate-600 text-slate-300 mt-10 outline-none py-2 px-4 text-xl" />
-                {/* <button onClick={()=>getMusicList()} className="btn-dark mx-auto">Suffle</button> */}
+        <div className="mt-10 mx-10 sm:mx-80">
+            <div className="flex justify-between">
+                <input type="text" placeholder="Search" onKeyUp={(e:React.KeyboardEvent)=>processSearch(e)} className="w-[70%] sm:w-[90%] bg-slate-700 text-slate-300 outline-none py-2 px-4 text-xl" />
+                <div className="bg-slate-700 md:hover:bg-slate-600 active:bg-slate-900 px-3 py-2 sm:px-5 sm:py-4 rounded-sm cursor-pointer">
+                    <FaFilter className="text-2xl" />
+                </div>
+                
             </div>
         </div>
     );
